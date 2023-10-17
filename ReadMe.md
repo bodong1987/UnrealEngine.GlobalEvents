@@ -63,7 +63,7 @@ void UGameEventTestsSubsystem::RegisterDebugEvent()
 To register an event in a blueprint, use the Register Global Event node. You need to provide an event name, target object and a function name as parameters:  
 ![RegisterNode](./Docs/Images/RegisterNode.png)
 
-**Please note: the signature of an event is determined by the callback function that first registered it**  
+**Please note: the signature of an event is determined by the callback function that first registered it by default. Of course, if you want to force a message signature, you can do it through the interface: UGameEventSubsystem::BindSignature.**  
 
 ### Unregister message callback
 In C++, you only need to change the interface from Register to UnRegister, and the rest remains unchanged. like this:  
