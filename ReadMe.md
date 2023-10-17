@@ -1,4 +1,7 @@
 # Global Events Plugins for UnrealEngine
+
+**Your bug reports and improvements are very welcome, you can submit them through the issues page. Of course, you can also fix it yourself and submit a Pull Request.**
+
 ## Introduction
 This is a plugin for Unreal Engine. Its main purpose is to implement a simple message sending system in Unreal to solve the strong coupling problem caused by using function calls, delegation and other means.Through this plug-in, you can register a message listener (observer) with the message service, and you can also dispatch messages (publisher) through the message service.  
 
@@ -87,7 +90,7 @@ void UGameEventTestsSubsystem::UnRegisterDebugEvent()
 }
 
 ```
-Most registered message callbacks support de-registration as they are, which can reduce the cost of understanding. You also don’t need to save FDelegateHandle for de-registration. Of course, the only exception is when using a Lambda expression as a callback. At this time, you can only record the FDelegateHandle and actively unregister it when it is no longer needed, such as:  
+Most registered message callbacks support un-registration as they are, which can reduce the cost of understanding. You also don’t need to save FDelegateHandle for un-registration. Of course, the only exception is when using a Lambda expression as a callback. At this time, you can only record the FDelegateHandle and unregister it when it is no longer needed, such as:  
 ```C++
     // register by common interface
     //     auto lambda = [](__TestParams) {
@@ -214,6 +217,8 @@ DEFINE_TYPESAFE_GLOBAL_EVENT(DebugEvent, __TestParamsType);
 
 To dispatch an event in a blueprint, you need to use the Broadcast Global Event node, and you need to use the "Add Argument" button on the node to add the correct parameters. You need to ensure that the number and type of parameters match the number of parameters required for the target message. The type matches, otherwise the message you dispatch will not be delivered correctly, and the previously registered callback function will not be triggered.  
 ![Broadcast](./Docs/Images/BroadcastEvent.png)   
+The blueprint sends messages by calling the BroadcastDynamic interface, which is also the method used to send events in other scripting languages.  
+
 
 ## FAQ   
 1. Why are versions before 4.25 not supported?   
@@ -238,9 +243,9 @@ This way you can trigger related code further in the script engine. To send a me
 UFUNCTION(BlueprintCallable, Category = "Global Events", meta=(BlueprintInternalUseOnly = "true"))
 static bool BroadcastEvent(FName EventName, UDynamicEventContext* Context);
 ```  
+Of course, you can also bind a C++ function of your own to your script and use it to send messages.  
 As for registering message callbacks inside the script, you can maintain a dictionary inside the script yourself, and when the relevant message is triggered, extract the parameters in the UDynamicEventContext object to call the corresponding script function.  
 
-**Your bug reports and improvements are very welcome, you can submit them through the issues page. Of course, you can also fix it yourself and submit a Pull Request.**
 
 3. Can this system be used in other classes?  
 Yes. By looking at the source code, you can find that the interfaces for registration, deregistration, and message dispatch are actually added to UGameEventSubSystem through the include method. Of course, you can add them to your own class through the same method.  
@@ -278,5 +283,7 @@ public:
 };
 ```
 If you don't need some interfaces, you can just not include the corresponding inl file. However, EventCenterDataInterfacesInclude.inl is necessary.  
+
+
 
 
