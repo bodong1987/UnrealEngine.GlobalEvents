@@ -178,7 +178,39 @@ For Broadcast, there are two interfaces, one is static type safety; the other is
         StringObjectMap
     );
 ```
-**The so-called static security is just that I provide a macro to define an event. When this event is defined, it forcibly constrains an event and the parameter list of this event, so that the parameters do not match when you register, unregister, or dispatch an event ( number or type), it will cause a compilation error.**
+**The so-called static security is just that I provide a macro to define an event. When this event is defined, it forcibly constrains an event and the parameter list of this event, so that the parameters do not match when you register, unregister, or dispatch an event ( number or type), it will cause a compilation error. you can use this macro to define an static event: DEFINE_TYPESAFE_GLOBAL_EVENT**  
+
+```C++
+#define __TestParamsType \
+	bool, \
+	uint8, \
+	int32, \
+	int64, \
+	EGlobalEventParameterType, \
+	FString, \
+	FString&, \
+	const FString&, \
+	FName, \
+	const FName&, \
+	FVector, \
+	FVector&, \
+	const FVector&, \
+	UObject*, \
+	TArray<int>, \
+	const TArray<int>&, \
+	TArray<FString>, \
+	const TArray<FString>&, \
+	TArray<UObject*>, \
+	const TArray<UObject*>&, \
+	TSet<int>, \
+	const TSet<FName>&, \
+	TMap<FName, FString>, \
+	const TMap<int, FString>&, \
+	TMap<int, UObject*>, \
+	const TMap<FString, UObject*>&
+    
+DEFINE_TYPESAFE_GLOBAL_EVENT(DebugEvent, __TestParamsType);
+```
 
 To dispatch an event in a blueprint, you need to use the Broadcast Global Event node, and you need to use the "Add Argument" button on the node to add the correct parameters. You need to ensure that the number and type of parameters match the number of parameters required for the target message. The type matches, otherwise the message you dispatch will not be delivered correctly, and the previously registered callback function will not be triggered.  
 ![Broadcast](./Docs/Images/BroadcastEvent.png)   
