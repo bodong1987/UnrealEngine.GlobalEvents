@@ -1,6 +1,6 @@
 # Global Events Plugins for UnrealEngine
 ## Introduction
-This is a plug-in for UnrealEngine. Its main purpose is to implement a simple message sending system in Unreal to contact the strong coupling relationship between objects.Through this plug-in, you can register a message listener (observer) with the message service, and you can also dispatch messages (publisher) through the message service.  
+This is a plugin for Unreal Engine. Its main purpose is to implement a simple message sending system in Unreal to solve the strong coupling problem caused by using function calls, delegation and other means.Through this plug-in, you can register a message listener (observer) with the message service, and you can also dispatch messages (publisher) through the message service.  
 
 This plugin supports the following capabilities:
 * Register event callbacks in Blueprints, C++ or other scripts.
@@ -241,4 +241,42 @@ static bool BroadcastEvent(FName EventName, UDynamicEventContext* Context);
 As for registering message callbacks inside the script, you can maintain a dictionary inside the script yourself, and when the relevant message is triggered, extract the parameters in the UDynamicEventContext object to call the corresponding script function.  
 
 **Your bug reports and improvements are very welcome, you can submit them through the issues page. Of course, you can also fix it yourself and submit a Pull Request.**
+
+3. Can this system be used in other classes?  
+Yes. By looking at the source code, you can find that the interfaces for registration, deregistration, and message dispatch are actually added to UGameEventSubSystem through the include method. Of course, you can add them to your own class through the same method.  
+```C++
+UCLASS()
+class GLOBALEVENTS_API UGameEventSubsystem : public UGameInstanceSubsystem
+{
+	GENERATED_BODY()
+	
+public:
+	/** Implement this for initialization of instances of the system */
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
+	/** Implement this for deinitialization of instances of the system */
+	virtual void Deinitialize() override;
+
+	static UGameEventSubsystem* GetInstance(const UObject* InContext);
+
+#define ENABLE_EVENT_CENTER_ON_RECEIVE_GLOBAL_EVENT
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FGlobalEventDelegateType           OnReceiveGlobalEvent;
+
+public:
+#if CPP
+#include "Inline/EventCenterDataInterfacesInline.inl"
+#include "Inline/EventCenterCommonInterfacesInline.inl"
+#include "Inline/EventCenterTypeSafeInterfacesInline.inl"
+#include "Inline/EventCenterDynamicInterfacesInline.inl"
+#include "Inline/EventCenterSignatureInterfacesInline.inl"
+#endif
+
+#undef ENABLE_EVENT_CENTER_ON_RECEIVE_GLOBAL_EVENT
+};
+```
+If you don't need some interfaces, you can just not include the corresponding inl file. However, EventCenterDataInterfacesInclude.inl is necessary.  
+
 
