@@ -1,0 +1,30 @@
+﻿{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "Global Events Tests",
+	"Description": "Global Events Router Tests",
+	"Category": "Programming",
+	"CreatedBy": "bodong",
+	"CreatedByURL": "https://github.com/bodong1987/UnrealEngine.GlobalEvents",
+	"DocsURL": "https://github.com/bodong1987/UnrealEngine.GlobalEvents/ReadMe.md",
+	"MarketplaceURL": "",
+	"SupportURL": "https://github.com/bodong1987/UnrealEngine.GlobalEvents/issues",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "GlobalEventsTests",
+			"Type": "DeveloperTool",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "GlobalEvents",
+			"Enabled": true
+		}
+	]
+}

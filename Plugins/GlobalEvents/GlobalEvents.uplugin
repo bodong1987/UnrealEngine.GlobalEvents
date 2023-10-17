@@ -1,0 +1,29 @@
+﻿{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "Global Events",
+	"Description": "Global Events Plugins",
+	"Category": "Programming",
+	"CreatedBy": "bodong",
+	"CreatedByURL": "https://github.com/bodong1987/UnrealEngine.GlobalEvents",
+	"DocsURL": "https://github.com/bodong1987/UnrealEngine.GlobalEvents/ReadMe.md",
+	"MarketplaceURL": "",
+	"SupportURL": "https://github.com/bodong1987/UnrealEngine.GlobalEvents/issues",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "GlobalEvents",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault"
+		},
+		{
+			"Name": "GlobalEventsEditor",
+			"Type": "UncookedOnly",
+			"LoadingPhase": "Default"
+		}
+	]
+}
