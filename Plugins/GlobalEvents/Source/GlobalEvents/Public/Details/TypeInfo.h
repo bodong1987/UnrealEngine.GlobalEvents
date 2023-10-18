@@ -36,6 +36,26 @@ namespace UE
     {
         namespace Details
         {
+            template <typename... Types>
+            struct TTypeList
+            {
+            };
+
+            template <int Index, typename TypeList>
+            struct TTypeAt;
+
+            template <typename Head, typename... Tail>
+            struct TTypeAt<0, TTypeList<Head, Tail...>>
+            {
+                using Type = Head;
+            };
+
+            template <int Index, typename Head, typename... Tail>
+            struct TTypeAt<Index, TTypeList<Head, Tail...>>
+            {
+                using Type = typename TTypeAt<Index - 1, TTypeList<Tail...>>::Type;
+            };
+
             constexpr bool IsUObjectPtr(const volatile UObjectBase*) { return true; }
             constexpr bool IsUObjectPtr(...) { return false; }
 

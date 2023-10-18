@@ -27,6 +27,7 @@ private:
 	void UnRegisterDebugEvent();
 	void SendDebugEvent();
 	void TestDynamicTuple();
+	void TestReferenceParameter();
 
 private:
 	FRawTestsObject RawObj;

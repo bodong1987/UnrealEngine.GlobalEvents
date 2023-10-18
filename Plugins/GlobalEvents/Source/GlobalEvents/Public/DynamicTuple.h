@@ -65,6 +65,7 @@ namespace UE
             };
 
         public:
+            // Add a data to the Tuple
             template <typename T>
             inline void Push(const T& InValue)
             {
@@ -121,6 +122,10 @@ namespace UE
                 return *(const T*)Address;
             }
 
+            /*
+            * Get the address of the object at the specified index. 
+            * Please note that to use this interface, you need to ensure that the types match, otherwise it will cause a crash.
+            */
             inline const void* GetAddress(int InIndex) const
             {
                 checkSlow(InIndex >= 0 && InIndex < TupleElementRecords.Num());

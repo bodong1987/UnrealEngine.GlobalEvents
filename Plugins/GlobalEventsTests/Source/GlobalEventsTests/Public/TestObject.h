@@ -143,6 +143,9 @@ public:
 	);
 
 	static void PrintDebugString(const FString& Tag, __TestParams);
+
+	UFUNCTION()
+	void TestUFunctionWithReference(bool bv, bool& bref, FString sv, FString& sr, FVector vv, FVector& vr);
 };
 
 class FRawTestsObject

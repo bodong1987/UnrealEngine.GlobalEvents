@@ -197,27 +197,11 @@ private:
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGlobalEventDelegateType, const FName&, EventName, UDynamicEventContext*, Context);
 
-template <typename T, typename U>
-struct THasOnReceiveGlobalEvent
-{
-private:
-	template <typename C, C>
-	struct Check;
-
-	template <typename C>
-	static int16 Test(Check<U C::*, &C::OnReceiveGlobalEvent>*);
-
-	template <typename C>
-	static int8 Test(...);
-
-public:
-	static constexpr bool Value = sizeof(decltype(Test<T>(nullptr))) == sizeof(int16);
-};
-
 template <typename... ParamTypes>
 class TDynamicEventContextFactory
 {
 public:
+	// Create new dynamic event context from C++ variadic template parameters
 	static UDynamicEventContext* NewContext(ParamTypes... InParams)
 	{
 		UDynamicEventContext* Context = NewObject<UDynamicEventContext>();

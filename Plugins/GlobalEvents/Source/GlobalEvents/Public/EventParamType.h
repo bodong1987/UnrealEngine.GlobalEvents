@@ -57,10 +57,7 @@ enum class EGlobalEventParameterFlags
 	None        = 0,
 	Reference   = 1 << 0,
 	Pointer     = 1 << 1,
-	Constant    = 1 << 2,
-	Array       = 1 << 3,
-	Set         = 1 << 4,
-	Map         = 1 << 5
+	Constant    = 1 << 2
 };
 
 /*
@@ -95,9 +92,10 @@ public:
 	inline bool IsReference() const { return (Flags & (int)EGlobalEventParameterFlags::Reference) != 0; }
 	inline bool IsPointer() const { return (Flags & (int)EGlobalEventParameterFlags::Pointer) != 0; }
 	inline bool IsConst() const { return (Flags & (int)EGlobalEventParameterFlags::Constant) != 0; }
-	inline bool IsArray() const { return (Flags & (int)EGlobalEventParameterFlags::Array) != 0; }
-	inline bool IsSet() const { return (Flags & (int)EGlobalEventParameterFlags::Set) != 0; }
-	inline bool IsMap() const { return (Flags & (int)EGlobalEventParameterFlags::Map) != 0; }
+
+	inline bool IsArray() const { return TypeId == EGlobalEventParameterType::GEPT_Array; }
+	inline bool IsSet() const { return TypeId == EGlobalEventParameterType::GEPT_Set; }
+	inline bool IsMap() const { return TypeId == EGlobalEventParameterType::GEPT_Map; }
 
 	inline EGlobalEventParameterType GetTypeId() const { return TypeId; }
 
@@ -109,7 +107,7 @@ public:
 private:
 	FName								CppName;
 	EGlobalEventParameterType			TypeId;
-	TWeakObjectPtr<const UField>		ObjectType;
+	TWeakObjectPtr<const UField>		ObjectType;	
 	int                                 Flags;
 };
 

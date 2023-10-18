@@ -72,11 +72,6 @@ namespace UE
                         Flags |= (int)EGlobalEventParameterFlags::Constant;
                     }
 
-                    if constexpr (TIsTArray<typename TDecay<T>::Type>::Value)
-                    {
-                        Flags |= (int)EGlobalEventParameterFlags::Array;
-                    }
-
                     return FGlobalEventParamType(
                         UE::GlobalEvents::Details::TTypeInfo<typename TDecay<T>::Type>::GetTypeName(),
                         UE::GlobalEvents::Details::TTypeInfo<typename TDecay<T>::Type>::GetTypeId(),

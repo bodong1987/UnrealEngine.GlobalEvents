@@ -207,6 +207,13 @@ public:
 		return RegisterImpl<EventType>(&Observer);
 	}
 
+	// for Unreal UFunction
+	template <typename EventType, typename UserClass, typename TEnableIf<TIsDerivedFrom<UserClass, UObject>::Value, int>::Type = 0>
+	inline FDelegateHandle Register(UserClass* InTarget, const FName& InFunctionName)
+	{
+		return Register<UserClass>(EventType::GetEventName(), InTarget, InFunctionName);
+	}
+
 	/*
 	* Clear all observers for an event
 	*/

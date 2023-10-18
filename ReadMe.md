@@ -282,7 +282,7 @@ public:
 #undef ENABLE_EVENT_CENTER_ON_RECEIVE_GLOBAL_EVENT
 };
 ```
-If you don't need some interfaces, you can just not include the corresponding inl file. However, EventCenterDataInterfacesInclude.inl is necessary.  
+If you don't need some interfaces, you can just not include the corresponding inl file. However, EventCenterDataInterfacesInline.inl is necessary.  
 
 
 

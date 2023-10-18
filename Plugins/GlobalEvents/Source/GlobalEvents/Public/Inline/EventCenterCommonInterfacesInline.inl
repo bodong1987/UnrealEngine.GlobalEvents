@@ -163,7 +163,7 @@ public:
 	}
 
 	template <typename UserClass, ESPMode Mode, typename... ParamTypes, typename TEnableIf<!TIsDerivedFrom<UserClass, UObject>::Value, int>::Type = 0>
-	inline bool UnRegisterUnsafe(const FName& InEventName, const TSharedPtr<UserClass, Mode>& InTarget, void (UserClass::* InFunc)(ParamTypes...))
+	inline bool UnRegister(const FName& InEventName, const TSharedPtr<UserClass, Mode>& InTarget, void (UserClass::* InFunc)(ParamTypes...))
 	{
 		static_assert(!UE::GlobalEvents::Details::IsUObjectPtr((UserClass*)nullptr), "You cannot use UObject method in this method.");
 		checkSlow(InTarget);
@@ -268,10 +268,6 @@ public:
 
 		return Ptr != nullptr && (*Ptr)->Disconnect(InHandle);
 	}
-
-private:
-
-
 
 public:
 	/*

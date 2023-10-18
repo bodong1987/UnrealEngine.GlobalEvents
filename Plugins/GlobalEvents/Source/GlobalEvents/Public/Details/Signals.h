@@ -1,4 +1,4 @@
-﻿/*
+/*
     MIT License
 
     Copyright (c) 2023 GlobalEvents Plugin For UnrealEngine
@@ -65,30 +65,9 @@ namespace UE
                 void Lock();
                 void UnLock();
 
-#if ENGINE_MAJOR_VERSION < 5
-            private:
-                template <typename... Types>
-                struct TypeList
-                {
-                };
-
-                template <int Index, typename TypeList>
-                struct TypeAt;
-
-                template <typename Head, typename... Tail>
-                struct TypeAt<0, TypeList<Head, Tail...>>
-                {
-                    using Type = Head;
-                };
-
-                template <int Index, typename Head, typename... Tail>
-                struct TypeAt<Index, TypeList<Head, Tail...>>
-                {
-                    using Type = typename TypeAt<Index - 1, TypeList<Tail...>>::Type;
-                };
-#endif
-
             protected:
+                inline bool IsTargetsEmpty() const { return Targets.Num() == 0; }
+
                 struct GLOBALEVENTS_API FUnLockHelper
                 {
                     FBaseSignal* Owner;
@@ -105,31 +84,19 @@ namespace UE
                     }
                 };
 
-                template <size_t Index = 0, typename... ParamTypes, typename... ArgTypes>
-                typename TEnableIf<Index == sizeof...(ParamTypes), void>::Type
-                    MoveLeftReferenceBack(TTuple<ParamTypes...>&, TTuple<typename TDecay<ParamTypes>::Type...>&, ArgTypes&...)
-                {
-                }
+				template <SIZE_T Index, typename TTupleType, typename T, typename... ParamTypes>
+                void MoveLeftReferenceBack(TTupleType& InTempTupleRef, T ValueRef, ParamTypes... InParams)
+				{
+					if constexpr (TIsNonConstLValueReference<T>::Value)
+					{
+						ValueRef = MoveTemp(InTempTupleRef.template Get<Index>());
+					}
 
-                template <size_t Index = 0, typename... ParamTypes, typename... ArgTypes>
-                typename TEnableIf < Index < sizeof...(ParamTypes), void>::Type
-                    MoveLeftReferenceBack(TTuple<ParamTypes...>& InParamsRef, TTuple<typename TDecay<ParamTypes>::Type...>& InTempTupleRef, ArgTypes&... Args)
-                {
-                    #if ENGINE_MAJOR_VERSION >= 5
-                    using Type = typename TTupleElement<Index, TTuple<ParamTypes...>>::Type;
-                    #else
-                    using Type = typename TypeAt<Index, TypeList<ParamTypes...>>::Type;
-                    #endif
-
-                    if constexpr (TIsNonConstLValueReference<Type>::Value)
-                    {
-                        InParamsRef.template Get<Index>() = MoveTemp(InTempTupleRef.template Get<Index>());
-                    }
-
-                    MoveLeftReferenceBack<Index + 1>(InParamsRef, InTempTupleRef, Args...);
-                }
-
-                inline bool IsTargetsEmpty() const { return Targets.Num() == 0; }
+					if constexpr (sizeof...(ParamTypes) > 0)
+					{
+						MoveLeftReferenceBack<Index + 1, TTupleType, ParamTypes...>(InTempTupleRef, InParams...);
+					}
+				}
 
                 template <typename... ParamTypes>
                 void RaiseEventInternal(ParamTypes... InParams)
@@ -171,10 +138,12 @@ namespace UE
                                 if constexpr (bNeedWriteBack)
                                 {
                                     // write tuple reference values to InParams
-                                    TTuple<ParamTypes...> ParamsTuple(InParams...);
-                                    MoveLeftReferenceBack(ParamsTuple, Stack.GetValue(), InParams...);
+                                    if constexpr (sizeof...(ParamTypes) > 0)
+                                    {
+                                        MoveLeftReferenceBack<0, TTuple<typename TDecay<ParamTypes>::Type...>, ParamTypes...>(Stack.GetValue(), InParams...);
 
-                                    MaybeChanged = false;
+                                        MaybeChanged = false;
+                                    }
                                 }
                             }
                         }

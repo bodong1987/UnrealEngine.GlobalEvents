@@ -63,12 +63,7 @@ FGlobalEventParamType::FGlobalEventParamType(const FProperty* InProperty) :
     {
         Flags |= (int)EGlobalEventParameterFlags::Constant;
     }
-
-    if (InProperty->IsA<FArrayProperty>())
-    {
-        Flags |= (int)EGlobalEventParameterFlags::Array;
-    }
-    
+        
     // 
     if (const FObjectPropertyBase* ObjectProperty = CastField<FObjectPropertyBase>(InProperty))
     {       

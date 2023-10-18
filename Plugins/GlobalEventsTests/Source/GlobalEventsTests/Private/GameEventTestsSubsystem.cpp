@@ -52,6 +52,8 @@ void UGameEventTestsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     RegisterDebugEvent();
 
     SendDebugEvent();
+
+    TestReferenceParameter();
 }
 
 void UGameEventTestsSubsystem::Deinitialize()
@@ -307,6 +309,10 @@ void UGameEventTestsSubsystem::SendDebugEvent()
     TMap<int, UObject*> IntObjectMap{ {100, this}, {200, EventCenter} };
     TMap<FString, UObject*> StringObjectMap{ {TEXT("This"), this}, {TEXT("EventCenter"), EventCenter} };
 
+    // Parameter mismatch will not cause a compilation error, but an error message will be output at run time.
+    // Template parameters are optional, but most of the time, in order to ensure that the parameter type is correctly inferred, 
+    // template parameters should be provided. 
+    // For example, C++ template inference cannot infer const TCHAR* to FString.
     EventCenter->Broadcast<__TestParamsType>(
             FDebugEvent::GetEventName(),
             bValue,
@@ -353,7 +359,7 @@ void UGameEventTestsSubsystem::SendDebugEvent()
         vecRef = FVector(7, 8, 9);
         });
 
-
+    // If the parameter type does not match the event definition, a compilation error will be triggered
     EventCenter->Broadcast<FDebugEvent>(
         bValue,
         u8Value,
@@ -388,4 +394,46 @@ void UGameEventTestsSubsystem::SendDebugEvent()
 
     EventCenter->UnRegister(FDebugEvent::GetEventName(), Handle);
 
+}
+
+DEFINE_TYPESAFE_GLOBAL_EVENT(TestReferenceEvent, bool, bool&, FString, FString&, FVector, FVector&);
+
+void UGameEventTestsSubsystem::TestReferenceParameter()
+{
+    bool bValue = false, bRef = false;
+    FString strValue = TEXT("strValue"), strRef = TEXT("strRef");
+    FVector vecValue = FVector(1, 2, 3), vecRef = FVector(7, 8, 9);
+
+    struct FLocalReferenceTest
+    {
+        void DoSth(bool bv, bool& bref, FString sv, FString& sr, FVector vv, FVector& vr)
+        {
+            bref = true;
+            sr = TEXT("strRef2");
+            vr = FVector(100, 200, 300);
+        }
+    };
+
+    UGameEventSubsystem* EventCenter = UGameEventSubsystem::GetInstance(this);
+    check(EventCenter != nullptr);
+
+    FLocalReferenceTest LocalTestObj;
+    EventCenter->Register<FTestReferenceEvent>(&LocalTestObj, &FLocalReferenceTest::DoSth);
+
+    EventCenter->Broadcast<FTestReferenceEvent>(bValue, bRef, strValue, strRef, vecValue, vecRef);
+    check(bRef);
+    check(strRef == TEXT("strRef2"));
+    check(vecRef == FVector(100, 200, 300));
+
+    EventCenter->UnRegister<FTestReferenceEvent>(&LocalTestObj, &FLocalReferenceTest::DoSth);
+
+    EventCenter->Register<FTestReferenceEvent>(TestsObj, GET_FUNCTION_NAME_CHECKED(UTestObject, TestUFunctionWithReference));
+
+    EventCenter->Broadcast<FTestReferenceEvent>(bValue, bRef, strValue, strRef, vecValue, vecRef);
+
+    check(!bRef);
+    check(strRef == GET_FUNCTION_NAME_CHECKED(UTestObject, TestUFunctionWithReference).ToString());
+    check(vecRef == FVector(1024, 2048, 4096));
+
+    EventCenter->ClearEventObservers<FTestReferenceEvent>();
 }

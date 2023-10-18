@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "TestObject.h"
@@ -171,3 +171,11 @@ extern "C"
         __PrintDebugString();
     }
 }
+
+void UTestObject::TestUFunctionWithReference(bool bv, bool& bref, FString sv, FString& sr, FVector vv, FVector& vr)
+{
+    bref = false;
+    sr = GET_FUNCTION_NAME_CHECKED(UTestObject, TestUFunctionWithReference).ToString();
+    vr = FVector(1024, 2048, 4096);
+}
+
