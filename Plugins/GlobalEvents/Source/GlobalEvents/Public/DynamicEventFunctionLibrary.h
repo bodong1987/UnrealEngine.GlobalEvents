@@ -28,6 +28,7 @@
 #include "CoreMinimal.h"
 #include "DynamicTuple.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "GameplayTagContainer.h"
 #include "DynamicEventFunctionLibrary.generated.h"
 
 class UDynamicEventContext;
@@ -39,15 +40,15 @@ class GLOBALEVENTS_API UDynamicEventFunctionLibrary : public UBlueprintFunctionL
 public:
     // Send a message, the parameters of this message need to be packaged into UDynamicEventContext
 	UFUNCTION(BlueprintCallable, Category = "Global Events", meta=(BlueprintInternalUseOnly = "true"))
-	static bool BroadcastEvent(FName EventName, UDynamicEventContext* Context);
+	static bool BroadcastEvent(FGameplayTag EventTag, UDynamicEventContext* Context);
 
     // register a global event
-	UFUNCTION(BlueprintCallable, Category = "Global Events", meta = (DefaultToSelf = "Target"))
-	static bool RegisterGlobalEvent(FName EventName, UObject* Target, FName FunctionName);
+	UFUNCTION(BlueprintCallable, Category = "Global Events", meta = (DefaultToSelf = "Target", HidePin = "Target"))
+	static bool RegisterGlobalEvent(FGameplayTag EventTag, UObject* Target, FName FunctionName);
 
     // unregister a global event
-	UFUNCTION(BlueprintCallable, Category = "Global Events", meta = (DefaultToSelf = "Target"))
-	static bool UnRegisterGlobalEvent(FName EventName, UObject* Target, FName FunctionName);
+	UFUNCTION(BlueprintCallable, Category = "Global Events", meta = (DefaultToSelf = "Target", HidePin = "Target"))
+	static bool UnRegisterGlobalEvent(FGameplayTag EventTag, UObject* Target, FName FunctionName);
 
 	static const FName PushDynamicEventFunctionName;
 private:

@@ -29,13 +29,13 @@
 
 const FName UDynamicEventFunctionLibrary::PushDynamicEventFunctionName = GET_FUNCTION_NAME_CHECKED(UDynamicEventFunctionLibrary, PushDynamicEventParam);
 
-bool UDynamicEventFunctionLibrary::BroadcastEvent(FName EventName, UDynamicEventContext* Context)
+bool UDynamicEventFunctionLibrary::BroadcastEvent(FGameplayTag EventTag, UDynamicEventContext* Context)
 {
     check(Context != nullptr);
 
     UGameEventSubsystem* Subsystem = UGameEventSubsystem::GetInstance(Context);
 
-    return Subsystem != nullptr && Subsystem->BroadcastDynamic(EventName, Context);
+    return Subsystem != nullptr && Subsystem->BroadcastDynamic(EventTag.GetTagName(), Context);
 }
 
 void UDynamicEventFunctionLibrary::PushDynamicEventParam(UDynamicEventContext* Context, const int32& Value)
@@ -64,21 +64,21 @@ DEFINE_FUNCTION(UDynamicEventFunctionLibrary::execPushDynamicEventParam)
     P_NATIVE_END;
 }
 
-bool UDynamicEventFunctionLibrary::RegisterGlobalEvent(FName EventName, UObject* Target, FName FunctionName)
+bool UDynamicEventFunctionLibrary::RegisterGlobalEvent(FGameplayTag EventTag, UObject* Target, FName FunctionName)
 {
     check(Target != nullptr);
 
     UGameEventSubsystem* Subsystem = UGameEventSubsystem::GetInstance(Target);
 
-    return Subsystem != nullptr && Subsystem->Register(EventName, Target, FunctionName).IsValid();
+    return Subsystem != nullptr && Subsystem->Register(EventTag.GetTagName(), Target, FunctionName).IsValid();
 }
 
-bool UDynamicEventFunctionLibrary::UnRegisterGlobalEvent(FName EventName, UObject* Target, FName FunctionName)
+bool UDynamicEventFunctionLibrary::UnRegisterGlobalEvent(FGameplayTag EventTag, UObject* Target, FName FunctionName)
 {
     check(Target != nullptr);
 
     UGameEventSubsystem* Subsystem = UGameEventSubsystem::GetInstance(Target);
 
-    return Subsystem != nullptr && Subsystem->UnRegister(EventName, Target, FunctionName);
+    return Subsystem != nullptr && Subsystem->UnRegister(EventTag.GetTagName(), Target, FunctionName);
 }
 

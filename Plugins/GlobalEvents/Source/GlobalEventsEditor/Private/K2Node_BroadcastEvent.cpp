@@ -84,7 +84,7 @@ private:
     }
 };
 
-static const FName EVENT_NAME("EventName");
+static const FName EVENT_NAME("EventTag");
 static const FName PARAM_NAME("Param");
 static const FName RESULT_NAME("Result");
 
@@ -246,7 +246,7 @@ void UK2Node_BroadcastEvent::AllocateDefaultPins()
     CreatePin(EGPD_Output, UEdGraphSchema_K2::PC_Exec, UEdGraphSchema_K2::PN_Then);
 
     // name
-    UEdGraphPin* NamePin = CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Name, EVENT_NAME);
+    UEdGraphPin* NamePin = CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Struct, FGameplayTag::StaticStruct(), EVENT_NAME);
     checkSlow(NamePin != nullptr);
 
     NamePin->PinToolTip = TEXT("Select an event name");
@@ -423,7 +423,7 @@ void UK2Node_BroadcastEvent::ExpandNode(class FKismetCompilerContext& CompilerCo
     UEdGraphPin* NamePin = FindPin(EVENT_NAME);
     checkSlow(NamePin);
 
-    UEdGraphPin* EventNamePin = CallSendEventNode->FindPin(TEXT("EventName"));
+    UEdGraphPin* EventNamePin = CallSendEventNode->FindPin(EVENT_NAME);
     check(EventNamePin!= nullptr);
 
     if (NamePin->LinkedTo.Num() > 0)

@@ -19,7 +19,9 @@ public class GlobalEventsEditor : ModuleRules
                 "GraphEditor",
                 "BlueprintGraph",
                 "ToolMenus",
-                "KismetCompiler"
+                "KismetCompiler",
+				"GameplayTags",
+				"GameplayTagsEditor"
 				// ... add other public dependencies that you statically link with here ...
 			}
 		);
