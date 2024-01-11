@@ -42,11 +42,11 @@ public:
 	static bool BroadcastEvent(FName EventName, UDynamicEventContext* Context);
 
     // register a global event
-	UFUNCTION(BlueprintCallable, Category = "Global Events")
+	UFUNCTION(BlueprintCallable, Category = "Global Events", meta = (DefaultToSelf = "Target"))
 	static bool RegisterGlobalEvent(FName EventName, UObject* Target, FName FunctionName);
 
     // unregister a global event
-	UFUNCTION(BlueprintCallable, Category = "Global Events")
+	UFUNCTION(BlueprintCallable, Category = "Global Events", meta = (DefaultToSelf = "Target"))
 	static bool UnRegisterGlobalEvent(FName EventName, UObject* Target, FName FunctionName);
 
 	static const FName PushDynamicEventFunctionName;
