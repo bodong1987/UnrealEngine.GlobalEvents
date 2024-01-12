@@ -308,7 +308,7 @@ void UK2Node_BroadcastEvent::EarlyValidation(class FCompilerResultsLog& messageL
 
         if (EventName == NAME_None || EventName.ToString().TrimStartAndEnd().IsEmpty())
         {
-            messageLog.Error(*FString::Printf(TEXT("[@@]You must provide the event name [%s]"), *NamePin->GetDisplayName().ToString()), this);
+            messageLog.Warning(*FString::Printf(TEXT("[@@]You must provide the event name [%s]"), *NamePin->GetDisplayName().ToString()), this);
         }
     }
 
